@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Zhang Wei",
+    "email": "zhangwei@example.com",
+    "address": "No. 123 Nanjing Road, Shanghai",
+    "phone": "138-1234-5678"
+  },
+  {
+    "name": "Li Na",
+    "email": "lina@example.com",
+    "address": "No. 456 Chaoyang Road, Beijing",
+    "phone": "139-5678-1234"
+  },
+  {
+    "name": "Wang Jun",
+    "email": "wangjun@example.com",
+    "address": "No. 789 Jiefang Road, Guangzhou",
+    "phone": "137-9876-5432"
+  }
+]
