@@ -1,0 +1,19 @@
+{
+	"servers": {
+		"my-mcp-server-cc3e14c9": {
+			"type": "stdio",
+			"command": "node",
+			"args": [
+				"dist/server.js"
+			],
+            "cwd": "${workspaceFolder}",
+            "dev": {
+                "watch": "build/**/*.js",
+                "debug": {
+                    "type": "node"
+                }
+            }
+		}
+	},
+	"inputs": []
+}
