@@ -1,6 +1,6 @@
 import { ChatOpenAI } from "@langchain/openai"
 import { tool } from '@langchain/core/tools'
-import { HumanMessage, SystemMessage, ToolMessage } from "@langchain/core/messages"
+import { BaseMessage, HumanMessage, SystemMessage, ToolMessage } from "@langchain/core/messages"
 import fs from 'node:fs/promises'
 import { z } from 'zod'
 
@@ -35,7 +35,7 @@ const modelWithTools = model.bindTools(tools)
 
 
 
-const messages = [
+const messages: BaseMessage[] = [
     new SystemMessage(`
   你是一个代码助手，可以使用工具读取文件并解释代码
 
@@ -65,19 +65,26 @@ while (response.tool_calls && response.tool_calls.length) {
         }
         console.log(`执行工具： ${toolCall.name} (${JSON.stringify(toolCall.args)})`)
         try {
-            const result = await tool.invoke(toolCall.args)
-            return result
+            // toolCall.args 来自模型输出，类型为 Record<string, any>，需断言为工具入参
+            const result = await tool.invoke(toolCall.args as any)
+            // tool.invoke 可能返回 string 或 ToolMessage，统一提取为字符串
+            return typeof result === 'string'
+                ? result
+                : typeof result.content === 'string'
+                    ? result.content
+                    : JSON.stringify(result.content)
         } catch (err) {
-            console.log(`错误 ${err.message} `)
-            return `错误：执行工具 ${toolCall.name} 失败：${err.message}`
+            const message = err instanceof Error ? err.message : String(err)
+            console.log(`错误 ${message} `)
+            return `错误：执行工具 ${toolCall.name} 失败：${message}`
         }
     }))
-    
+
     // 将工具结果作为 ToolMessage 放在消息数组中
     response.tool_calls.forEach((toolCall, index) => {
         messages.push(new ToolMessage({
             content: toolResults[index],
-            tool_call_id : toolCall.id
+            tool_call_id : toolCall.id ?? ''
         }))
     })
 
