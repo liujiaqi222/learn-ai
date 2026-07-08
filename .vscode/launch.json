@@ -1,0 +1,32 @@
+{
+  // Bun 扩展原生调试配置（type: "bun"）
+  // 用法：打开任意 .ts 文件 → 设好红点断点 → 按 F5
+  // program 用 ${file}，所以这个配置能调试任何当前打开的 ts 文件
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "bun",
+      "request": "launch",
+      "name": "Debug Bun (当前文件)",
+      "program": "${file}",
+      "args": [],
+      // 关键：cwd 用文件所在目录，Bun 才能加载同目录的 .env
+      "cwd": "${fileDirname}",
+      "env": {},
+      "strictEnv": false,
+      "watchMode": false,
+      "stopOnEntry": false,
+      "noDebug": false,
+      "runtime": "bun",
+      "runtimeArgs": []
+    },
+    {
+      "type": "bun",
+      "request": "attach",
+      "name": "Attach to Bun",
+      "url": "ws://localhost:6499/",
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app"
+    }
+  ]
+}

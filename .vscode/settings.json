@@ -1,0 +1,13 @@
+{
+  // Bun 扩展设置
+  // 指向你机器上实际的 bun 可执行文件路径（which bun 的结果）
+  "bun.runtime": "/Users/liujiaqi/.bun/bin/bun",
+
+  // 在「JavaScript Debug Terminal」里直接跑 `bun index.ts` 也能命中断点
+  "bun.debugTerminal.enabled": true,
+  "bun.debugTerminal.stopOnEntry": false,
+
+  // 测试文件匹配规则
+  "bun.test.filePattern": "**/*{.test.,.spec.,_test_,_spec_}{js,ts,tsx,jsx,mts,cts,cjs,mjs}",
+  "bun.test.customScript": "bun test"
+}
