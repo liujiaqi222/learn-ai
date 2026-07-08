@@ -41,7 +41,7 @@ Bun 会**自动加载**当前工作目录下的 `.env`，无需 `dotenv`。
 
 推荐用 VSCode，装上 **Bun for Visual Studio Code** 扩展（扩展 ID：`oven.bun-vscode`）。
 
-仓库已配好 `.vscode/launch.json` 和 `.vscode/settings.json`，三种断点调试方式任选其一：
+仓库已配好 `.vscode/launch.json` 和 `.vscode/settings.json`，两种断点调试方式任选其一：
 
 ### 方式一：按 F5（最常用）
 
@@ -51,20 +51,11 @@ Bun 会**自动加载**当前工作目录下的 `.env`，无需 `dotenv`。
 
 停住后：`F10` 单步、`F11` 步入、`F5` 继续，左侧面板看变量和调用栈。
 
-### 方式二：编辑器右上角运行按钮
-
-打开 `.ts` 文件，编辑器**右上角**（标签页那一行最右边）会出现 ▶ 运行按钮：
-
-- 直接点 ▶：`Run File`（运行，不断点）
-- 点 ▶ 旁的下拉箭头 ▾：菜单里选 `Debug File`（断点调试，先设好断点）
-
-> 该按钮由 Bun 扩展提供（`editor/title/run` 菜单），仅对 `.ts`/`.js`/`.tsx`/`.jsx` 文件显示。
-
-### 方式三：Debug Terminal
+### 方式二：Debug Terminal
 
 VSCode 终端右侧下拉选 `JavaScript Debug Terminal`，直接输入 `bun index.ts`，命中断点。适合临时调试、需要带额外参数的场景。
 
-> 三种方式原理相同（都是 `bun --inspect-wait` + 调试器 attach），只是触发入口不同。
+> 两种方式原理相同（都是 `bun --inspect-wait` + 调试器 attach），只是触发入口不同。
 
 ## 项目结构
 
