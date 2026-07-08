@@ -39,7 +39,7 @@ Bun 会**自动加载**当前工作目录下的 `.env`，无需 `dotenv`。
 
 ## 调试（VSCode + Bun 扩展）
 
-推荐用 VSCode，装上 **Bun for Visual Studio Code** 扩展（扩展 ID：`oven-sh.bun-vscode`）。
+推荐用 VSCode，装上 **Bun for Visual Studio Code** 扩展（扩展 ID：`oven.bun-vscode`）。
 
 仓库已配好 `.vscode/launch.json` 和 `.vscode/settings.json`，三种断点调试方式任选其一：
 
