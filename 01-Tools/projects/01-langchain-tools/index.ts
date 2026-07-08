@@ -55,43 +55,43 @@ let response = await modelWithTools.invoke(messages);
 // 将 ai 返回的消息放在消息数组中
 messages.push(response)
 
+// ① 模型返回了工具调用，进入循环：并发执行所有工具调用
 while (response.tool_calls && response.tool_calls.length) {
     console.log(`[检测到${response.tool_calls.length}个工具调用`)
-   const toolResults = await Promise.all(
-    response.tool_calls.map(async toolCall => {
-        const tool = tools.find(t => t.name === toolCall.name)
-        if (!tool) {
-            return `错误： 找不到工具 ${toolCall.name}`
-        }
-        console.log(`执行工具： ${toolCall.name} (${JSON.stringify(toolCall.args)})`)
-        try {
-            // toolCall.args 来自模型输出，类型为 Record<string, any>，需断言为工具入参
-            const result = await tool.invoke(toolCall.args as any)
-            // tool.invoke 可能返回 string 或 ToolMessage，统一提取为字符串
-            return typeof result === 'string'
-                ? result
-                : typeof result.content === 'string'
-                    ? result.content
-                    : JSON.stringify(result.content)
-        } catch (err) {
-            const message = err instanceof Error ? err.message : String(err)
-            console.log(`错误 ${message} `)
-            return `错误：执行工具 ${toolCall.name} 失败：${message}`
-        }
-    }))
+    const toolResults = await Promise.all(
+        response.tool_calls.map(async toolCall => {
+            // ② 根据工具名查找并执行对应工具
+            const tool = tools.find(t => t.name === toolCall.name)
+            if (!tool) {
+                return `错误： 找不到工具 ${toolCall.name}`
+            }
+            console.log(`执行工具： ${toolCall.name} (${JSON.stringify(toolCall.args)})`)
+            try {
+                // toolCall.args 来自模型输出，类型为 Record<string, any>，需断言为工具入参
+                const result = await tool.invoke(toolCall.args as any)
+                // tool.invoke 可能返回 string 或 ToolMessage，统一提取为字符串
+                return typeof result === 'string'
+                    ? result
+                    : typeof result.content === 'string'
+                        ? result.content
+                        : JSON.stringify(result.content)
+            } catch (err) {
+                const message = err instanceof Error ? err.message : String(err)
+                console.log(`错误 ${message} `)
+                return `错误：执行工具 ${toolCall.name} 失败：${message}`
+            }
+        }))
 
-    // 将工具结果作为 ToolMessage 放在消息数组中
+    // ③ 将工具结果包装为 ToolMessage 加入消息历史
     response.tool_calls.forEach((toolCall, index) => {
         messages.push(new ToolMessage({
             content: toolResults[index],
-            tool_call_id : toolCall.id ?? ''
+            tool_call_id: toolCall.id ?? ''
         }))
     })
 
-    // 再次调用模型，传入工具调用
-
+    // ④ 再次调用模型，让它基于工具返回的结果生成最终回答
     response = await modelWithTools.invoke(messages)
-
 }
 
 
