@@ -92,6 +92,9 @@ while (response.tool_calls && response.tool_calls.length) {
 
     // ④ 再次调用模型，让它基于工具返回的结果生成最终回答
     response = await modelWithTools.invoke(messages)
+    // ⑤ 把新一轮的 AIMessage 记进日志：若模型还想再调工具，
+    //    下一轮的 ToolMessage 才能靠 tool_call_id 关联到这条消息，不会变成"孤儿"
+    messages.push(response)
 }
 
 
