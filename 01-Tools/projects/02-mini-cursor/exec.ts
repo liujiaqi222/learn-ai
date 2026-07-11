@@ -42,12 +42,13 @@ import { spawn } from 'child_process'
 //   -a  : 显示所有文件（包括 . 开头的隐藏文件）
 const command = 'ls -la'
 
-// 当前工作目录：你在哪个文件夹运行这个脚本，它就是哪个
-const cwd = process.cwd()
-
 // 把命令字符串拆成「命令 + 参数」两部分
 // 'ls -la' -> cmd = 'ls'，args = ['-la']
 const [cmd, ...args] = command.split(' ')
+
+// 当前工作目录：你在哪个文件夹运行这个脚本，它就是哪个
+const cwd = process.cwd()
+
 
 // ─────────────────────────────────────────────
 // 2. 用 spawn 启动子进程，返回一个 child 对象
