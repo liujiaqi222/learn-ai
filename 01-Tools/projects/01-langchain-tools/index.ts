@@ -5,7 +5,7 @@ import fs from 'node:fs/promises'
 import { z } from 'zod'
 
 const model = new ChatOpenAI({
-    modelName: process.env.MODEL_NAME,
+    model: process.env.MODEL_NAME,
     apiKey: process.env.API_KEY,
     configuration: {
         baseURL: process.env.BASE_URL

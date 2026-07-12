@@ -49,10 +49,10 @@ const writeFileTool = tool(async ({ filePath, content }: { filePath: string, con
 // （Promise 的 resolve 幂等，多次调用只生效一次，所以 error+close 都 resolve 也安全）
 const execTool = tool(async ({ command, workingDirectory }: { command: string, workingDirectory: string }) => {
     return new Promise<string>((resolve) => {
-        const [cmd, ...args] = command.split(' ')
         const cwd = workingDirectory || process.cwd()
 
-        const child = spawn(cmd, args, {
+       
+        const child = spawn(command, {
             stdio: 'pipe',   // pipe 模式：stdout/stderr 走可读流，需手动消费（默认即 pipe，写明强调）
             cwd,
             shell: true,
@@ -73,7 +73,7 @@ const execTool = tool(async ({ command, workingDirectory }: { command: string, w
         })
 
         child.on('error', (err) => {
-            console.log(`[工具调用]exec_command(${command},${cwd}) cmd=${cmd} 执行报错, ${err.message}`)
+            console.log(`[工具调用]exec_command(${command},${cwd}) 执行报错, ${err.message}`)
             resolve(`执行失败: exec_command(${command},${cwd}), ${err.message}`)
         })
 
@@ -81,10 +81,10 @@ const execTool = tool(async ({ command, workingDirectory }: { command: string, w
         // exit 触发时进程虽退了，但流里可能还有数据没消费，会丢尾部输出。
         child.on('close', code => {
             if (code === 0) {
-                console.log(`[工具调用]exec_command(${command},${cwd}) cmd=${cmd} 执行成功`)
+                console.log(`[工具调用]exec_command(${command},${cwd}) 执行成功`)
                 resolve(`执行成功: exec_command(${command},${cwd})\n${out}`)
             } else {
-                console.log(`[工具调用]exec_command(${command},${cwd}) cmd=${cmd} 执行失败, 退出码=${code}`)
+                console.log(`[工具调用]exec_command(${command},${cwd}) 执行失败, 退出码=${code}`)
                 resolve(`执行失败: exec_command(${command},${cwd}), 退出码: ${code}\n${out}`)
             }
         })

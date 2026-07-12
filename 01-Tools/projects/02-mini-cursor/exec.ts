@@ -5,10 +5,10 @@ import { spawn } from 'child_process'
  * 也是迷你版 Cursor「执行命令」能力的核心写法
  *
  * ════════════════════════════════════════════════════════════
- *  spawn() 的核心模型：启动子进程 → 拿到 child 对象
+ *  spawn() 的核心模型：启动子进程 -> 拿到 child 对象
  * ════════════════════════════════════════════════════════════
  *
- *      spawn(cmd, args, options)        ← 启动子进程，返回 ↓
+ *      spawn(command, options)        ← 启动子进程，返回 ↓
  *
  *           ┌──────────────┐
  *           │  child 对象   │  ← 子进程对象
@@ -17,7 +17,7 @@ import { spawn } from 'child_process'
  *            ▼      ▼      ▼
  *         stdout  stderr  stdin      ← 3 个流
  *         (输出)  (报错)  (输入)        每个「流」本质上都是 EventEmitter
- *            │      │      │           → 用 .on('事件名', 回调) 来收数据
+ *            │      │      │           -> 用 .on('事件名', 回调) 来收数据
  *            ▼      ▼      ▼
  *       .on('data')   .on('data')  .write(...)
  *
@@ -42,9 +42,8 @@ import { spawn } from 'child_process'
 //   -a  : 显示所有文件（包括 . 开头的隐藏文件）
 const command = 'ls -la'
 
-// 把命令字符串拆成「命令 + 参数」两部分
-// 'ls -la' -> cmd = 'ls'，args = ['-la']
-const [cmd, ...args] = command.split(' ')
+//   spawn 也支持三参形式 spawn(cmd, args, options)，用于不用 shell、
+//   直接执行某个二进制 + 结构化参数的场景；这里要跑 shell 命令，单参更合适。
 
 // 当前工作目录：你在哪个文件夹运行这个脚本，它就是哪个
 const cwd = process.cwd()
@@ -54,7 +53,7 @@ const cwd = process.cwd()
 // 2. 用 spawn 启动子进程，返回一个 child 对象
 // ─────────────────────────────────────────────
 
-const child = spawn(cmd, args, {
+const child = spawn(command, {
   cwd,              // 在哪个目录下执行
   stdio: 'inherit', // ★ 重点：'inherit' 会把 child 的 3 个流（stdout/stderr/stdin）
                     //   直接连到当前终端，输出自动显示，无需手动 .on('data')
@@ -62,9 +61,9 @@ const child = spawn(cmd, args, {
 })
 
 // child 对象上有 3 个流（都是 EventEmitter）：
-//   child.stdout  → 正常输出     本例因 stdio:'inherit' 已自动接管，无需手动监听
-//   child.stderr  → 报错输出     同上
-//   child.stdin   → 向子进程输入  同上
+//   child.stdout  -> 正常输出     本例因 stdio:'inherit' 已自动接管，无需手动监听
+//   child.stderr  -> 报错输出     同上
+//   child.stdin   -> 向子进程输入  同上
 //
 // 👉 如果 stdio 用默认值（不带 'inherit'），就要这样手动拿输出：
 //      child.stdout.on('data', data => console.log(data.toString()))
