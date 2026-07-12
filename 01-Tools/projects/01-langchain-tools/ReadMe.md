@@ -120,30 +120,31 @@ while (response.tool_calls && response.tool_calls.length) {  // 还想调工具�
 
 ---
 
-## 7. ⚠️ 一个隐藏的多轮 bug（也是最好的学习点）
+## 7. 消息顺序：每轮 AIMessage 都要进日志
 
-代码在循环**外** push 了第 1 个 `response`，但循环**内**第 2 次 `invoke` 拿到的新 `response` **没有 push 进 `messages`**：
+`ToolMessage` 必须用 `tool_call_id` 关联回**某条具体的 `AIMessage`**（第 6 节已点过）。这带来一个硬性要求：**循环内每一轮 `invoke` 产生的新 `AIMessage`，都要立刻 push 进 `messages`**。
 
-```ts
-let response = await modelWithTools.invoke(messages);
-messages.push(response)              // ✅ 第 1 个 AIMessage 进了日志
-
-while (response.tool_calls?.length) {
-    // 执行工具、push ToolMessage ...
-    response = await modelWithTools.invoke(messages)   // ❌ 这个新 response 没被 push
-}
-```
-
-**后果**：本示例只读一个文件（单轮工具调用），能正常跑。但若模型**连续两轮**调工具（读完 A，又想读 A 里 import 的 B），第二轮的 `ToolMessage` 会变成"孤儿"——它的 `tool_call_id` 指向的那个 `AIMessage` 根本不在日志里，OpenAI 会直接返回 400 错误。
-
-**一行修复**：在循环内 invoke 之后补一句 `messages.push(response)`：
+为什么？看连续两轮调工具时 `messages` 的演变（本示例只读一个文件、是单轮，这里推演到多轮）：
 
 ```ts
-    response = await modelWithTools.invoke(messages)
-    messages.push(response)   // 补上：把每轮 AIMessage 都记进日志
+第 1 轮：模型要读 A
+[ System, Human, AIMessage₁(tool_calls=[ read_file A ]) ]        ← push ✅
+
+执行工具，回填结果
+[ ..., AIMessage₁, ToolMessage_A ]                              ← tool_call_id 关联到 AIMessage₁
+
+第 2 轮 invoke -> 模型看完 A，又想读 A 里 import 的 B
+[ ..., AIMessage₁, ToolMessage_A, AIMessage₂(tool_calls=[ read_file B ]) ]   ← 必须 push ✅
+
+执行工具，回填结果
+[ ..., AIMessage₂, ToolMessage_B ]                              ← tool_call_id 关联到 AIMessage₂
 ```
 
-> 这个 bug 本身就是理解"消息顺序与协议契约"的活教材——它告诉你：**日志里少一条 AIMessage，整条调用链就断了。**
+如果第 2 轮的 `AIMessage₂` 忘了 push，`ToolMessage_B` 就成了**孤儿**--它的 `tool_call_id` 指向的 `AIMessage₂` 根本不在日志里，OpenAI 会直接返回 400。
+
+所以代码循环内每次 `invoke` 后都有一句 `messages.push(response)`（代码里标 ⑤ 的那步）。**单轮工具调用（本示例）少这句也能跑，但一旦模型连续两轮调工具，整条调用链就断了。**
+
+> 这也呼应了第 6 节"消息顺序不能乱"：`AIMessage(tool_calls)` 必须排在对应 `ToolMessage` 前面--协议要求每个 `ToolMessage` 都能在日志里找到它关联的 `AIMessage`。
 
 ---
 
