@@ -21,7 +21,7 @@ curl -fsSL https://bun.sh/install | bash
 ```bash
 cd 01-Tools/projects/01-langchain-tools   # 进入某个子项目
 bun install                                # 首次运行：安装依赖
-bun index.ts                               # 运行
+bun solution/index.ts                      # 运行参考实现（problem/ 是带 TODO 的练习，explainer/ 是讲解）
 ```
 
 ### 环境变量
@@ -53,7 +53,7 @@ Bun 会**自动加载**当前工作目录下的 `.env`，无需 `dotenv`。
 
 ### 方式二：Debug Terminal
 
-VSCode 终端右侧下拉选 `JavaScript Debug Terminal`，直接输入 `bun index.ts`，命中断点。适合临时调试、需要带额外参数的场景。
+VSCode 终端右侧下拉选 `JavaScript Debug Terminal`，直接输入 `bun solution/index.ts`，命中断点。适合临时调试、需要带额外参数的场景。
 
 > 两种方式原理相同（都是 `bun --inspect-wait` + 调试器 attach），只是触发入口不同。
 
@@ -62,13 +62,18 @@ VSCode 终端右侧下拉选 `JavaScript Debug Terminal`，直接输入 `bun ind
 ```
 learn-ai/
 ├── .vscode/                          # 调试配置（launch.json / settings.json）
+├── .claude/skills/                   # 本地技能（scaffold-learning 等）
+├── scripts/
+│   └── check-exercises.ts            # 练习结构校验：bun scripts/check-exercises.ts
 ├── 01-Tools/                         # 工具调用相关示例
 │   └── projects/
 │       └── 01-langchain-tools/       # LangChain 工具调用最小 Agent
-│           ├── index.ts
+│           ├── explainer/readme.md   # 概念讲解
+│           ├── problem/index.ts      # 带 TODO 的练习起手架（自己填）
+│           ├── solution/index.ts     # 参考实现
 │           ├── .env.example          # 环境变量模板（复制为 .env）
-│           └── ReadMe.md             # 该示例的详细讲解
+│           └── package.json          # 三件套共享依赖
 └── README.md                         # 本文件
 ```
 
-每个子项目目录通常有自己的 `ReadMe.md`，讲解该示例的具体内容与原理。
+每个练习是 `explainer/`（讲解）+ `problem/`（带 TODO 的练习）+ `solution/`（参考实现）三件套；讲解在 `explainer/readme.md`。

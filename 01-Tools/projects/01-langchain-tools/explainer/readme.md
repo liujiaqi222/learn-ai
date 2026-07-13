@@ -201,5 +201,5 @@ LangGraph                         ← 把 Agent 编排成显式状态机
 ```bash
 # 配好 .env（从 .env.example 复制，填 MODEL_NAME / API_KEY / BASE_URL）后
 bun install      # 首次
-bun run index.ts
+bun solution/index.ts
 ```

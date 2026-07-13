@@ -454,8 +454,8 @@ await mcpClient.close();
 ```bash
 # 配好 .env（从 .env.example 复制，填 API_KEY / BASE_URL / MODEL_NAME）后
 bun install          # 首次
-bun run mcp-server.ts   # 单独跑 server，可配合 Inspector 调试
-bun run mcp-client.ts   # 端到端：拉起 server + 跑 Agent + 三段演示
+bun solution/mcp-server.ts   # 单独跑 server，可配合 Inspector 调试
+bun solution/mcp-client.ts   # 端到端：拉起 server + 跑 Agent + 三段演示
 ```
 
 `mcp-client.ts` 跑完会自动 `close()` 退出。`mcp-server.ts` 单独跑会一直等 stdin 输入（等 Client 连），按 Ctrl+C 退出。

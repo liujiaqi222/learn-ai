@@ -1,6 +1,6 @@
 # 手写练习区
 
-这里放我「凭记忆手写」的练习代码，和项目根目录的参考版对照学习。
+这里放我「凭记忆手写」的练习代码，和 solution/ 的参考版对照学习。
 
 ## 约定
 
@@ -18,9 +18,9 @@
 对照命令（在 `practice/` 目录下执行）：
 
 ```bash
-diff ../exec.ts exec.ts
+diff ../solution/exec.ts exec.ts
 # 或更直观（带颜色）：
-git diff --no-index --color ../exec.ts exec.ts
+git diff --no-index --color ../solution/exec.ts exec.ts
 ```
 
 ## 练习记录

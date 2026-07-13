@@ -58,7 +58,7 @@ Agent 就自己一轮一轮地调工具:跑命令建项目 -> `list_directory` �
 - **`error` 和 `close` 都 resolve 是安全的**:Promise 的 resolve 幂等,多次调用只生效第一次。所以子进程启动失败(`error`)和结束(`close`)都 resolve 不会出问题。
 - **整条命令字符串交给 `shell: true`,不要 split 成 args**:shell:true 下若拆 args,Node 会给每个参数加引号转义,把 `|`、`&&`、引号当字面字符,复杂命令会坏。整条字符串给 shell 让它自己解析。
 
-> spawn 的完整心智模型图(子进程对象 + 3 个流 + 2 个事件)在 `exec.ts` 文件头注释里画得很清楚,回顾时直接看那个文件;手写练习见 `practice/exec.ts`。
+> spawn 的完整心智模型图(子进程对象 + 3 个流 + 2 个事件)在 `solution/exec.ts` 文件头注释里画得很清楚,回顾时直接看那个文件;手写练习见 `practice/exec.ts`。
 
 ---
 
@@ -104,7 +104,7 @@ mini-cursor 跑通 todo app 很爽,但也把短板暴露得很彻底:
 ```bash
 # 配好 .env(从 .env.example 复制,填 MODEL_NAME / API_KEY / BASE_URL)后
 bun install      # 首次
-bun run mini-cursor.ts
+bun solution/mini-cursor.ts
 ```
 
-> ⚠️ `exec_command` 能跑**任意命令**,且没有沙箱。运行前看清 `mini-cursor.ts` 里的任务 prompt,确认要在当前目录建 `react-todo-app` 再跑。
+> ⚠️ `exec_command` 能跑**任意命令**,且没有沙箱。运行前看清 `solution/mini-cursor.ts` 里的任务 prompt,确认要在当前目录建 `react-todo-app` 再跑。

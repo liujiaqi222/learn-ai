@@ -47,7 +47,7 @@ const messages: BaseMessage[] = [
   可用工具：
   - read_file: 读取文件内容
 `),
-    new HumanMessage('请读取/Users/liujiaqi/code/learn-ai/01-Tools/projects/01-langchain-tools/index.ts 文件内容并解释代码')
+    new HumanMessage('请读取 ./solution/index.ts 文件内容并解释代码')
 ]
 
 let response = await modelWithTools.invoke(messages);
