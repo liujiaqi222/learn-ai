@@ -5,7 +5,7 @@ description: 为 learn-ai 仓库批量搭建练习骨架：按学习计划创建
 
 # Scaffold Learning
 
-为 `~/code/learn-ai` 批量搭建练习目录骨架，跑 `bun scripts/check-exercises.ts` 校验通过后 `git commit`。仓库用 **TypeScript + Bun**，`.ts` 直接 `bun` 跑，无需编译。
+为 `~/code/learn-ai` 批量搭建练习目录骨架，跑 `bun .claude/skills/scaffold-learning/check-exercises.ts` 校验通过后 `git commit`。仓库用 **TypeScript + Bun**，`.ts` 直接 `bun` 跑，无需编译。
 
 ## 目录命名（沿用仓库现有约定）
 
@@ -50,12 +50,12 @@ description: 为 learn-ai 仓库批量搭建练习骨架：按学习计划创建
 2. **建目录** - `mkdir -p` 每条路径
 3. **写 stub** - 每个变体文件夹一个 `readme.md`；problem/solution 各放带 TODO 的 `.ts` 起手架；需要时在练习根目录放 `.env.example`
 4. **装依赖** - 练习根目录若有 `package.json` 且新增了依赖，`bun install`
-5. **跑校验** - `bun scripts/check-exercises.ts`，修到全部 ✓
+5. **跑校验** - `bun .claude/skills/scaffold-learning/check-exercises.ts`，修到全部 ✓
 6. **提交** - `git add` + `git commit`
 
 ## 校验脚本
 
-`bun scripts/check-exercises.ts`（在仓库根目录跑）扫描所有 `*/projects/*/` 练习：
+`bun .claude/skills/scaffold-learning/check-exercises.ts`（在仓库根目录跑）扫描所有 `*/projects/*/` 练习：
 
 - **扁平老项目**（没有 explainer/problem/solution 任何一个）：跳过，打印 `·`
 - **三件套练习**：检查
@@ -75,7 +75,7 @@ description: 为 learn-ai 仓库批量搭建练习骨架：按学习计划创建
 
 ```bash
 git mv 01-Tools/projects/04-mcp 01-Tools/projects/05-mcp
-bun scripts/check-exercises.ts
+bun .claude/skills/scaffold-learning/check-exercises.ts
 ```
 
 ## 示例：从计划 stub
@@ -108,4 +108,4 @@ mkdir -p 02-RAG/projects/03-rag-pipeline/{explainer,problem,solution}
 ...（02、03 同理）
 ```
 
-需要调模型时在练习根目录加 `.env.example`。最后 `bun scripts/check-exercises.ts` 全 ✓ 再提交。
+需要调模型时在练习根目录加 `.env.example`。最后 `bun .claude/skills/scaffold-learning/check-exercises.ts` 全 ✓ 再提交。

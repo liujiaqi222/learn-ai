@@ -4,8 +4,7 @@ import { spawn } from 'child_process'
  * 练习：实现 exec_command 工具的核心--把 spawn 的事件驱动桥接成 Promise。
  *
  * 目标：调用 execCommand('ls -la') 能拿到完整 stdout 输出并返回。
- * 参考：../solution/tools.ts 里的 execTool；讲解见 ../explainer/readme.md 第 4 节。
- * （另一条练习路线：去 ../practice/ 凭记忆默写 exec.ts。）
+
  *
  * 要点：
  *   1. spawn(command, { stdio: 'pipe', shell: true })

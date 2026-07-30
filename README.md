@@ -62,9 +62,10 @@ VSCode 终端右侧下拉选 `JavaScript Debug Terminal`，直接输入 `bun sol
 ```
 learn-ai/
 ├── .vscode/                          # 调试配置（launch.json / settings.json）
-├── .claude/skills/                   # 本地技能（scaffold-learning 等）
-├── scripts/
-│   └── check-exercises.ts            # 练习结构校验：bun scripts/check-exercises.ts
+├── .claude/skills/
+│   └── scaffold-learning/            # 搭练习骨架技能 + 结构校验脚本
+│       ├── SKILL.md
+│       └── check-exercises.ts        # 练习结构校验：bun .claude/skills/scaffold-learning/check-exercises.ts
 ├── 01-Tools/                         # 工具调用相关示例
 │   └── projects/
 │       └── 01-langchain-tools/       # LangChain 工具调用最小 Agent

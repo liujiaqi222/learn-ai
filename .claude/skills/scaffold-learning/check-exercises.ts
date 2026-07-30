@@ -10,7 +10,7 @@
  *   2. problem/ 和 solution/ 必须各含至少一个非空 .ts 文件
  *   3. 不允许 .gitkeep
  *
- * 用法：在仓库根目录 `bun scripts/check-exercises.ts`
+ * 用法：在仓库根目录 `bun .claude/skills/scaffold-learning/check-exercises.ts`
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { existsSync } from "node:fs";
