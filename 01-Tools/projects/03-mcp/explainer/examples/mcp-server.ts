@@ -3,6 +3,8 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 
 /**
+ * AI 生成的完整参考代码，不是学习者的 solution。
+ *
  * MCP Server 示例：一个「用户信息」服务。
  *
  * 它对外暴露三类原语（MCP 的三块积木）：

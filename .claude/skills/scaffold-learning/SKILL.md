@@ -1,111 +1,128 @@
 ---
 name: scaffold-learning
-description: 为 learn-ai 仓库批量搭建练习骨架：按学习计划创建 explainer/problem/solution 三件套目录、带 TODO 的起手架和 readme，跑结构校验后提交。Use when user wants to scaffold exercises / 铺练习 / 建学习章节 / 新建练习骨架 / 给某知识点搭脚手架, or says 搭建/生成/批量创建练习/章节.
+description: 为 learn-ai 仓库搭建学习练习：AI 生成系统讲解、完整示例、分知识点 TODO 与行为测试，但把 solution 保留给学习者亲手实操。Use when user wants to scaffold exercises / 铺练习 / 建学习章节 / 新建练习骨架 / 给某知识点搭脚手架, or says 搭建/生成/批量创建练习/章节.
 ---
 
 # Scaffold Learning
 
-为 `~/code/learn-ai` 批量搭建练习目录骨架，跑 `bun .claude/skills/scaffold-learning/check-exercises.ts` 校验通过后 `git commit`。仓库用 **TypeScript + Bun**，`.ts` 直接 `bun` 跑，无需编译。
+为 `~/code/learn-ai` 创建以“阅读原文 → 亲手实操 → 独立测评 → 最后对照”为主线的学习目录。
+仓库使用 **TypeScript + Bun**。
 
-## 目录命名（沿用仓库现有约定）
+## 核心边界
 
-- **主题（Topic）**：`XX-Topic/`，如 `01-Tools`、`02-RAG`，dash-case
-- **练习（Exercise）**：`XX-Topic/projects/NN-exercise-name/`，如 `01-Tools/projects/04-mcp-tools`
-- 主题号 = `XX`，练习号 = `NN`，名称一律 dash-case（小写 + 连字符）
+三个目录按作者和用途划分：
 
-## 练习三件套
+| 目录 | 谁写 | 用途 |
+|---|---|---|
+| `explainer/` | AI | 系统讲解，以及 AI 生成的完整参考代码 |
+| `solution/` | 学习者 | 跟着原始材料亲手完成的整体实操 |
+| `problem/` | AI 出题，学习者作答 | 按独立能力拆分的 TODO 与预写测试 |
 
-每个练习目录下至少有一个子文件夹，三个变体含义：
+必须遵守：
 
-| 子文件夹 | 作用 | 必含文件 |
-|---------|------|---------|
-| `explainer/` | 概念讲解 / 自己的笔记（无 TODO） | `readme.md`（非空） |
-| `problem/` | 带 TODO 的起手架，自己填 | `readme.md` + 至少一个非空 `.ts` |
-| `solution/` | 完成版 / 参考实现 | `readme.md` + 至少一个非空 `.ts` |
+- **禁止在 `solution/` 生成完整代码。**
+- 新建时只为 `solution/` 写 `readme.md`，说明实操目标和建议文件名。
+- 不覆盖、补全或重写学习者已有的 `solution/` 代码，除非用户明确要求修改。
+- AI 完整实现只能放在 `explainer/examples/`，并标明“AI 参考代码”。
+- `problem/` 的测试先于学习者实现存在；TODO 未完成时测试失败是正常状态。
 
-- stub 时三件套默认都建（除非计划特别说明）。
-- `explainer/` 可以只有 readme；`problem/` 和 `solution/` 必须有 `.ts`。
-- 单文件入口习惯叫 `index.ts`；多文件项目（如 server + client）保留各自有意义的名字。
-- `package.json` / `tsconfig.json` / `.env` / `.env.example` / `node_modules/` 放在**练习根目录**，三件套共享，不重复装依赖。
+## 目录结构
 
-## 环境变量
+```text
+XX-Topic/projects/NN-exercise-name/
+├── explainer/
+│   ├── readme.md
+│   └── examples/
+│       └── ...               # AI 完整示例
+├── solution/
+│   └── readme.md             # 学习者实操区，不放 AI 代码
+├── problem/
+│   ├── readme.md             # 题目索引
+│   ├── 01-one-capability/
+│   │   ├── readme.md
+│   │   ├── index.ts          # TODO 起手架
+│   │   └── index.test.ts     # 预写行为测试
+│   └── 02-next-capability/
+└── package.json
+```
 
-练习要调模型 / 用 API key 时，在练习根目录放 `.env.example`（字段参考现有项目：`MODEL_NAME` / `API_KEY` / `BASE_URL`）。Bun 自动加载同目录 `.env`，无需 dotenv。problem 若不需要调模型（纯算法/工具练习）可不放。
+- Topic：`XX-Topic/`，例如 `01-Tools`。
+- Exercise：`XX-Topic/projects/NN-exercise-name/`。
+- 编号保持两位数；名称使用小写 dash-case。
+- 共享的 `package.json`、`tsconfig.json`、`.env.example` 放在练习根目录。
 
-## 必填文件规则
+## 如何拆 Problem
 
-- 每个变体文件夹的 `readme.md` **不能为空**（哪怕只有一行标题）
-- `problem/` 和 `solution/` 各至少一个非空 `.ts`（stub 时写一行 `// TODO: ...` 也算非空）
-- 不放 `.gitkeep`
-- stub readme 模板：
-  ```md
-  # 练习标题
+按“能独立证明已经掌握的能力”拆题，不按文章段落或单个 API 机械拆分。
 
-  一句话描述这个练习要练什么。
-  ```
+好的题目：
+
+- 能用一句话描述可观察结果。
+- 不依赖前一道题，能单独运行。
+- 一题只保留一个主要学习目标。
+- 起手架只提供无关样板和必要数据，不泄露核心答案。
+
+如果两个知识点只有组合后才有意义，可以合成一道集成题；不要为了数量制造碎题。
+
+## 测试规则
+
+每道题必须有测试，并在写 TODO 起手架时一起生成。
+
+- 测**对外行为**，不要搜索源码或限定必须使用某种写法。
+- 优先使用确定性的本地数据、fake、in-memory transport。
+- 默认不调用真实模型、不消耗 API key、不访问不稳定的外部服务。
+- 至少覆盖主路径和一个重要边界条件。
+- 测试名称要直接表达能力，例如“能发现并调用 query_user”。
+- 使用 `bun test problem/01-example` 单独运行。
+- 测试本身必须能够加载；TODO 未完成时应因断言不满足而失败，而不是语法错误。
+
+## Explainer 规则
+
+`explainer/readme.md` 将原始材料中较散的知识重新组织成清晰的心智模型：
+
+1. 先解释为什么需要它。
+2. 再讲核心角色和数据流。
+3. 然后解释关键 API 与常见坑。
+4. 最后给运行方法和进一步阅读。
+
+完整代码放进 `explainer/examples/`，不要把长实现全部塞进正文，也不要放进 `solution/`。
+
+## Solution 规则
+
+`solution/readme.md` 只写：
+
+- 原始学习材料来源。
+- 本次整体实操要完成什么。
+- 建议创建哪些文件、如何运行。
+- 明确“代码由学习者完成，AI 脚手架不会生成或覆盖”。
+
+`solution/` 没有 `.ts` 文件是合法的，表示学习者尚未开始。
 
 ## 工作流
 
-1. **解析计划** - 从用户给的学习计划抽出主题名、练习名、是否三件套
-2. **建目录** - `mkdir -p` 每条路径
-3. **写 stub** - 每个变体文件夹一个 `readme.md`；problem/solution 各放带 TODO 的 `.ts` 起手架；需要时在练习根目录放 `.env.example`
-4. **装依赖** - 练习根目录若有 `package.json` 且新增了依赖，`bun install`
-5. **跑校验** - `bun .claude/skills/scaffold-learning/check-exercises.ts`，修到全部 ✓
-6. **提交** - `git add` + `git commit`
+1. 读取学习计划、原始材料和相邻练习，提取真正需要掌握的能力。
+2. 创建 `explainer/problem/solution` 和必要的共享配置。
+3. 写系统化 explainer，并把 AI 完整代码放入 `explainer/examples/`。
+4. 为每项独立能力生成 TODO 起手架和行为测试。
+5. 只为 `solution/` 创建说明，保留实现空间。
+6. 安装新增依赖。
+7. 运行结构校验：
 
-## 校验脚本
+   ```bash
+   bun .claude/skills/scaffold-learning/check-exercises.ts
+   ```
 
-`bun .claude/skills/scaffold-learning/check-exercises.ts`（在仓库根目录跑）扫描所有 `*/projects/*/` 练习：
+8. 对 AI 示例运行类型检查或实际验证；对未完成 problem 说明预期失败的测试数量和原因。
+9. 汇报改动，不自动 commit；只有用户明确要求时才提交。
 
-- **扁平老项目**（没有 explainer/problem/solution 任何一个）：跳过，打印 `·`
-- **三件套练习**：检查
-  - 每个存在的变体文件夹 `readme.md` 非空
-  - `problem/` 和 `solution/` 各含至少一个非空 `.ts`
-  - 没有 `.gitkeep`
+## 迁移旧练习
 
-这是**结构校验**，不跑代码。solution 是否真能跑通要单独 `bun solution/xxx.ts` 验证。
+如果旧练习把 AI 参考实现放在 `solution/`：
 
-## 移动 / 重命名练习
+1. 用 `git mv` 移到 `explainer/examples/`，保留历史。
+2. 修正代码内部路径和文档命令。
+3. 把 `solution/readme.md` 改成学习者实操说明。
+4. 将综合 TODO 拆成独立题目，并为每题补行为测试。
+5. 不移动能够确认是学习者亲手写的代码；不确定时先询问。
 
-改编号或挪位置时：
-
-1. 用 `git mv`（不是 `mv`）保留历史——注意：未跟踪的文件用普通 `mv`
-2. 改数字前缀维持顺序
-3. 移完重跑校验
-
-```bash
-git mv 01-Tools/projects/04-mcp 01-Tools/projects/05-mcp
-bun .claude/skills/scaffold-learning/check-exercises.ts
-```
-
-## 示例：从计划 stub
-
-给定计划：
-
-```
-Topic 02: RAG
-- 02.01 基础检索（explainer + problem + solution）
-- 02.02 向量检索
-- 02.03 RAG 流程整合
-```
-
-建目录：
-
-```bash
-mkdir -p 02-RAG/projects/01-basic-retrieval/{explainer,problem,solution}
-mkdir -p 02-RAG/projects/02-vector-retrieval/{explainer,problem,solution}
-mkdir -p 02-RAG/projects/03-rag-pipeline/{explainer,problem,solution}
-```
-
-写 stub（每个变体一个 readme；problem/solution 各一个带 TODO 的 index.ts）：
-
-```
-02-RAG/projects/01-basic-retrieval/explainer/readme.md  -> "# 基础检索\n\n讲 BM25 / 关键词检索的原理。"
-02-RAG/projects/01-basic-retrieval/problem/readme.md    -> "# 基础检索\n\n自己实现一个简单的关键词检索。"
-02-RAG/projects/01-basic-retrieval/problem/index.ts     -> "// TODO: 实现关键词检索\n"
-02-RAG/projects/01-basic-retrieval/solution/readme.md   -> "# 基础检索\n\n参考实现。"
-02-RAG/projects/01-basic-retrieval/solution/index.ts    -> "// TODO: 完成版（先留占位）\n"
-...（02、03 同理）
-```
-
-需要调模型时在练习根目录加 `.env.example`。最后 `bun .claude/skills/scaffold-learning/check-exercises.ts` 全 ✓ 再提交。
+结构校验兼容尚未迁移的扁平旧题，但新练习一律采用分题结构。

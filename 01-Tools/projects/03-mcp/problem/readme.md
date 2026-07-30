@@ -1,25 +1,20 @@
-# MCP：写一个 Server（注册三原语）
+# MCP：独立测评
 
-`McpServer` 实例、数据库、transport 都已给好。你要注册三原语：一个 `query_user` 工具、一个 `docs://guide` 静态资源、一个 `summarize_user` 提示词。
+这里不是完整项目，而是把 MCP 的重要能力拆成互不依赖的小题。
+每道题都提供 TODO 起手架和行为测试；先实现，再用测试判断是否掌握。
 
-## 你要做的
+| 题目 | 测评能力 | 命令 |
+|---|---|---|
+| `01-register-tool` | 注册、发现并调用 Tool | `bun test problem/01-register-tool` |
+| `02-static-resource` | 注册并读取静态 Resource | `bun test problem/02-static-resource` |
+| `03-resource-template` | 注册并读取参数化 Resource | `bun test problem/03-resource-template` |
+| `04-register-prompt` | 注册并获取 Prompt | `bun test problem/04-register-prompt` |
+| `05-connect-client` | 用 stdio Client 获取并调用 MCP Tool | `bun test problem/05-connect-client` |
 
-打开 `index.ts`，填三个 `TODO`：`registerTool` / `registerResource` / `registerPrompt`。
+测试只检查对外行为，不限制你的具体代码写法。未完成 TODO 时测试失败是正常的。
 
-## 运行（无需 Client，直接喂 JSON-RPC）
+推荐顺序：
 
-```bash
-bun install   # 首次
-bun problem/index.ts <<'EOF'
-{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"test","version":"0.0.0"}}}
-{"jsonrpc":"2.0","method":"notifications/initialized"}
-{"jsonrpc":"2.0","id":2,"method":"tools/list"}
-{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"query_user","arguments":{"userId":"002"}}}
-EOF
-```
-
-`tools/list` 能列出 `query_user`、`tools/call` 返回李四的信息，就对了。无需 `.env`。
-
-## 对照
-
-卡住看 `../solution/mcp-server.ts`，讲解见 `../explainer/readme.md`。
+1. 先完成题目并运行测试。
+2. 卡住时看 `../explainer/readme.md` 的对应章节。
+3. 最后才对照 `../explainer/examples/`，避免直接照抄。

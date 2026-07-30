@@ -5,6 +5,8 @@ import { DynamicStructuredTool } from "@langchain/core/tools";
 import path from "node:path";
 
 /**
+ * AI 生成的完整参考代码，不是学习者的 solution。
+ *
  * MCP Client 示例：用 @langchain/mcp-adapters 把上一节的 Agent 循环接上 MCP Server。
  *
  * 和 02-mini-cursor 唯一的本质区别：工具不再是本进程里的函数，而是从 MCP Server 跨进程拿来的。

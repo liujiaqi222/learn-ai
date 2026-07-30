@@ -1,5 +1,9 @@
 # MCP：让 Tool 跨进程调用 -- 把工具从 Agent 进程里拆出去
 
+> 这里是 AI 整理的系统讲解。完整参考代码放在
+> [`examples/`](./examples/)；它用于最后对照，不是你的作答。
+> 你跟着原文写的代码放在 `../solution/`，独立测评放在 `../problem/`。
+
 前两课的工具都是写在 Agent 同一个进程里的 Node 函数：`read_file`、`exec_command`、`query_user`……模型只要一调，本进程里直接跑。但这有个硬限制--**你的 Agent 是 Node 写的，工具就得是 Node 写的**。如果某个能力是 Python、Java、Rust 实现的呢？如果你想写一次工具，让 Cursor、Claude Desktop、自己的 LangChain Agent **都能复用**呢？
 
 MCP（Model Context Protocol，模型上下文协议）就是解决这个问题的：它把「工具 / 资源 / 提示词」标准化成一套跨进程协议。写一次 MCP Server，任何 MCP Client 都能接。
@@ -454,11 +458,17 @@ await mcpClient.close();
 ```bash
 # 配好 .env（从 .env.example 复制，填 API_KEY / BASE_URL / MODEL_NAME）后
 bun install          # 首次
-bun solution/mcp-server.ts   # 单独跑 server，可配合 Inspector 调试
-bun solution/mcp-client.ts   # 端到端：拉起 server + 跑 Agent + 三段演示
+bun explainer/examples/mcp-server.ts   # 单独跑 AI 示例 server
+bun explainer/examples/mcp-client.ts   # 运行 AI 完整示例
 ```
 
 `mcp-client.ts` 跑完会自动 `close()` 退出。`mcp-server.ts` 单独跑会一直等 stdin 输入（等 Client 连），按 Ctrl+C 退出。
+
+建议按这个顺序学习：
+
+1. 阅读原文，在 `solution/` 跟着实操。
+2. 不看示例，完成 `problem/` 下的独立题目并运行测试。
+3. 卡住时先回来看本文，最后才对照 `explainer/examples/`。
 
 ---
 
