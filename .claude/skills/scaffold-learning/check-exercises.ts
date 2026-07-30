@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+// @ts-nocheck
 /**
  * learn-ai 练习结构校验脚本（替代 ai-hero-cli internal lint）。
  * 扫描仓库里所有 projects/ 下的练习目录：
